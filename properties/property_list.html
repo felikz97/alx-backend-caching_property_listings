@@ -1,0 +1,6 @@
+<!-- properties/templates/properties/property_list.html -->
+<ul>
+    {% for property in properties %}
+        <li>{{ property.title }} - ${{ property.price }}</li>
+    {% endfor %}
+</ul>
