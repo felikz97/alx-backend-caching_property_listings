@@ -1,7 +1,6 @@
 from django.core.cache import cache
 from .models import Property
-import logging
-from django_redis import get_redis_connection
+
 
 def get_all_properties():
     properties = cache.get('all_properties')
@@ -16,6 +15,9 @@ def clear_property_cache():
     # Optionally, you can clear the entire cache if needed
     # cache.clear()
     
+import logging
+from django_redis import get_redis_connection
+
 logger = logging.getLogger(__name__)
 
 def get_redis_cache_metrics():
@@ -25,14 +27,14 @@ def get_redis_cache_metrics():
 
         hits = info.get('keyspace_hits', 0)
         misses = info.get('keyspace_misses', 0)
+        total_requests = hits + misses
 
-        total = hits + misses
-        hit_ratio = (hits / total) if total > 0 else None
+        hit_ratio = (hits / total_requests) if total_requests > 0 else 0
 
         metrics = {
             "keyspace_hits": hits,
             "keyspace_misses": misses,
-            "hit_ratio": round(hit_ratio, 4) if hit_ratio is not None else "N/A"
+            "hit_ratio": round(hit_ratio, 4)
         }
 
         logger.info("Redis cache metrics: %s", metrics)
